@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>User Story to BranchName Converter</title>
+    <style>
+        * {
+            font-family: Arial, Helvetia, sans-serif;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #CCC;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type=text] {
+            width: 100%;
+            padding: 3px;
+        }
+        #branchName {
+            background-color: darkgreen;
+            color: white;
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Story to BranchName Converter</h1>
+    <p>
+        Converts a user story to a prefixed git branch name (CamelCased alphanumerics only).<br>
+        <a href="https://github.com/dag0310/User-Story-to-BranchName-Converter">GitHub repo</a> | Use at your own risk! &#x1F609;
+    </p>
+    <br>
+    <p>
+        <label>Prefix:
+            <input type="text" id="prefix" oninput="updateBranchName()" placeholder="my/prefix/">
+        </label>
+    </p>
+    <p>
+        <label>User Story:
+            <input type="text" id="summary" oninput="updateBranchName()" placeholder="Bugfix: Some *very* strange behavior in IE6 where 100% is interpreted as 99% #IE_sucks">
+        </label>
+    </p>
+    <p>
+        <label>BranchName:
+            <input type="text" id="branchName" onclick="this.select()" placeholder="my/prefix/BugfixSomeVeryStrangeBehaviorInIe6Where100IsInterpretedAs99Ie_sucks">
+        </label>
+    </p>
+    
+    <!-- JavaScript -->
+    <script>
+    String.prototype.capitalize = function() {
+        return this.charAt(0).toUpperCase() + this.slice(1);
+    }
+    
+    function cleanSummary(summary) {
+        summary = summary.replace(/[^\w\s]/g, '').toLowerCase();
+        
+        var summaryTokens = summary.match(/\S+/g);
+        if (summaryTokens === null)
+            return '';
+        
+        for (var i = 0; i < summaryTokens.length; i++) {
+            summaryTokens[i] = summaryTokens[i].capitalize();
+        }
+        
+        return summaryTokens.join('');
+    }
+    
+    function updateBranchName() {
+        branchName.value = prefix.value + cleanSummary(summary.value);
+    }
+    
+    updateBranchName();
+    </script>
+</body>
+</html>

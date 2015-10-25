@@ -1,2 +1,7 @@
 # User-Story-to-BranchName-Converter
-Converts a JIRA user story to a prefixed branch name
+Converts a user story to a prefixed git branch name (CamelCased alphanumerics only).
+
+![Demo](demo.png)
+
+## License
+MIT
