@@ -46,12 +46,14 @@
     </p>
     <p>
         <label>BranchName:
-            <input type="text" id="branchName" onclick="this.select()" placeholder="my/prefix/BugfixSomeVeryStrangeBehaviorInIe6Where100IsInterpretedAs99Ie_sucks">
+            <input type="text" id="branchName" onclick="onBranchNameClicked(this)" onfocus="onBranchNameClicked(this)" onblur="resetFocusedBranchNameClicksCounter(this)" placeholder="my/prefix/BugfixSomeVeryStrangeBehaviorInIe6Where100IsInterpretedAs99Ie_sucks">
         </label>
     </p>
     
     <!-- JavaScript -->
     <script>
+	var focusedBranchNameClicksCounter = 0;
+	
     String.prototype.capitalize = function() {
         return this.charAt(0).toUpperCase() + this.slice(1);
     }
@@ -78,7 +80,17 @@
         localStorage.prefix = prefix.value;
         updateBranchName();
     }
-    
+	
+	function onBranchNameClicked(self) {
+		focusedBranchNameClicksCounter++;
+		if (focusedBranchNameClicksCounter === 1)
+			self.select();
+	}
+	
+	function resetFocusedBranchNameClicksCounter(self) {
+		focusedBranchNameClicksCounter = 0;
+	}
+	
     prefix.value = localStorage.prefix ? localStorage.prefix : '';
     updateBranchName();
     </script>
