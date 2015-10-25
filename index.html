@@ -35,7 +35,7 @@
     <br>
     <p>
         <label>Prefix:
-            <input type="text" id="prefix" oninput="updateBranchName()" placeholder="my/prefix/">
+            <input type="text" id="prefix" oninput="onPrefixChanged()" placeholder="my/prefix/">
         </label>
     </p>
     <p>
@@ -73,6 +73,12 @@
         branchName.value = prefix.value + cleanSummary(summary.value);
     }
     
+    function onPrefixChanged() {
+        localStorage.prefix = prefix.value;
+        updateBranchName();
+    }
+    
+    prefix.value = localStorage.prefix ? localStorage.prefix : '';
     updateBranchName();
     </script>
 </body>
