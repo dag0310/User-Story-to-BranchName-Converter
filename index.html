@@ -39,14 +39,14 @@
       label {
         font-size: 16px;
       }
-      input {
+      input, select {
         padding: 5px 5px;
         border-radius: 3px;
         border: 1px solid #ccc;
-        margin: 0;
+        margin: 3px 0 0;
         width: 100%;
       }
-      input:focus {
+      input:focus, select:focus {
         border-color: rgb(13, 129, 242);
       }
       #branchName {
@@ -61,18 +61,27 @@
     <main>
       <h1>Branch Namer</h1>
       <p>
+        <label>Mode
+          <select id="mode" onchange="onModeChanged()">
+            <option value="dash" selected>dash-case</option>
+            <option value="camel">CamelCase</option>
+            <option value="unmodified">Unmodified</option>
+          </select>
+        </label>
+      </p>
+      <p>
         <label>Prefix
-          <input type="text" id="prefix" oninput="onPrefixChanged()" placeholder="my/prefix/">
+          <input type="text" id="prefix" oninput="onPrefixChanged()" placeholder="my/prefix/" autocomplete="off">
         </label>
       </p>
       <p>
         <label>Description
-          <input type="text" id="description" oninput="updateBranchName()" placeholder="Bugfix: Some *very* strange behavior in IE6 where 100% is interpreted as 99% #IE_sucks">
+          <input type="text" id="description" oninput="updateBranchName()" placeholder="Bugfix: Some *very* strange behavior in IE6 where 100% is interpreted as 99% #IE_sucks" autocomplete="off">
         </label>
       </p>
       <p>
         <label>Branch name
-          <input type="text" id="branchName" onclick="onBranchNameClicked(this)" onfocus="onBranchNameClicked(this)" onblur="resetFocusedBranchNameClicksCounter()" placeholder="my/prefix/BugfixSomeVeryStrangeBehaviorInIe6Where100IsInterpretedAs99Ie_sucks">
+          <input type="text" id="branchName" onclick="onBranchNameClicked(this)" onfocus="onBranchNameClicked(this)" onblur="resetFocusedBranchNameClicksCounter()" placeholder="my/prefix/BugfixSomeVeryStrangeBehaviorInIe6Where100IsInterpretedAs99Ie_sucks" autocomplete="off">
         </label>
       </p>
     </main>
@@ -84,23 +93,33 @@
         return this.charAt(0).toUpperCase() + this.slice(1);
       };
 
-      function formatDescription(description) {
-        description = description.replace(/[^\w\s]/g, '').toLowerCase();
-
-        const descriptionTokens = description.match(/\S+/g);
+      function formatDescription(description, mode) {
+        const descriptionTokens = description.replace(/[^\w\s]/g, '').toLowerCase().match(/\S+/g);
         if (descriptionTokens === null) {
           return '';
         }
 
-        for (let i = 0; i < descriptionTokens.length; i++) {
-          descriptionTokens[i] = descriptionTokens[i].capitalize();
+        switch (mode) {
+          case 'camel':
+            for (let i = 0; i < descriptionTokens.length; i++) {
+              descriptionTokens[i] = descriptionTokens[i].capitalize();
+            }
+            return descriptionTokens.join('');
+          case 'unmodified':
+            return description;
+          case 'dash:':
+          default:
+            return descriptionTokens.join('-');
         }
-
-        return descriptionTokens.join('');
       }
 
       function updateBranchName() {
-        branchName.value = prefix.value + formatDescription(description.value);
+        branchName.value = prefix.value + formatDescription(description.value, mode.value);
+      }
+      
+      function onModeChanged() {
+        localStorage.mode = mode.value;
+        updateBranchName();
       }
 
       function onPrefixChanged() {
@@ -119,6 +138,7 @@
         focusedBranchNameClicksCounter = 0;
       }
 
+      mode.value = localStorage.mode || '';
       prefix.value = localStorage.prefix || '';
       updateBranchName();
     </script>
