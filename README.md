@@ -1,2 +1,2 @@
-# User Story to BranchName Converter
-Converts a user story to a prefixed git branch name (CamelCased alphanumerics only).
+# Branch Namer
+Converts a prefix + description to a branch name.
