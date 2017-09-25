@@ -1,98 +1,98 @@
 <!doctype html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Branch Namer</title>
-        <link rel="icon" href="favicon.png?v=1">
-        <style>
-            * {
-                box-sizing: border-box;
-            }
-            body {
-                font-family: Arial, Helvetica, sans-serif;
-                background-color: #CCC;
-            }
-            label {
-                font-weight: bold;
-            }
-            input[type=text] {
-                width: 100%;
-                padding: 3px;
-            }
-            #branchName {
-                background-color: darkgreen;
-                color: white;
-                font-size: 16px;
-                letter-spacing: 1px;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Branch Namer</h1>
-        <p>
-            Converts a prefix + description to a branch name.<br>
-            <a href="https://github.com/dag0310/User-Story-to-BranchName-Converter">GitHub repo</a> | Use at your own risk! &#x1F609;
-        </p>
-        <br>
-        <p>
-            <label>Prefix:
-                <input type="text" id="prefix" oninput="onPrefixChanged()" placeholder="my/prefix/">
-            </label>
-        </p>
-        <p>
-            <label>User Story:
-                <input type="text" id="summary" oninput="updateBranchName()" placeholder="Bugfix: Some *very* strange behavior in IE6 where 100% is interpreted as 99% #IE_sucks">
-            </label>
-        </p>
-        <p>
-            <label>BranchName:
-                <input type="text" id="branchName" onclick="onBranchNameClicked(this)" onfocus="onBranchNameClicked(this)" onblur="resetFocusedBranchNameClicksCounter(this)" placeholder="my/prefix/BugfixSomeVeryStrangeBehaviorInIe6Where100IsInterpretedAs99Ie_sucks">
-            </label>
-        </p>
+  <head>
+    <meta charset="utf-8">
+    <title>Branch Namer</title>
+    <link rel="icon" href="favicon.png?v=1">
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background-color: #CCC;
+      }
+      label {
+        font-weight: bold;
+      }
+      input[type=text] {
+        width: 100%;
+        padding: 3px;
+      }
+      #branchName {
+        background-color: darkgreen;
+        color: white;
+        font-size: 16px;
+        letter-spacing: 1px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Branch Namer</h1>
+    <p>
+      Converts a prefix + description to a branch name.<br>
+      <a href="https://github.com/dag0310/User-Story-to-BranchName-Converter">GitHub repo</a> | Use at your own risk! &#x1F609;
+    </p>
+    <br>
+    <p>
+      <label>Prefix:
+        <input type="text" id="prefix" oninput="onPrefixChanged()" placeholder="my/prefix/">
+      </label>
+    </p>
+    <p>
+      <label>User Story:
+        <input type="text" id="summary" oninput="updateBranchName()" placeholder="Bugfix: Some *very* strange behavior in IE6 where 100% is interpreted as 99% #IE_sucks">
+      </label>
+    </p>
+    <p>
+      <label>BranchName:
+        <input type="text" id="branchName" onclick="onBranchNameClicked(this)" onfocus="onBranchNameClicked(this)" onblur="resetFocusedBranchNameClicksCounter(this)" placeholder="my/prefix/BugfixSomeVeryStrangeBehaviorInIe6Where100IsInterpretedAs99Ie_sucks">
+      </label>
+    </p>
 
-        <!-- JavaScript -->
-        <script>
-            var focusedBranchNameClicksCounter = 0;
+    <!-- JavaScript -->
+    <script>
+      var focusedBranchNameClicksCounter = 0;
 
-            String.prototype.capitalize = function() {
-                return this.charAt(0).toUpperCase() + this.slice(1);
-            }
+      String.prototype.capitalize = function() {
+        return this.charAt(0).toUpperCase() + this.slice(1);
+      }
 
-            function cleanSummary(summary) {
-                summary = summary.replace(/[^\w\s]/g, '').toLowerCase();
+      function cleanSummary(summary) {
+        summary = summary.replace(/[^\w\s]/g, '').toLowerCase();
 
-                var summaryTokens = summary.match(/\S+/g);
-                if (summaryTokens === null)
-                    return '';
+        var summaryTokens = summary.match(/\S+/g);
+        if (summaryTokens === null)
+          return '';
 
-                for (var i = 0; i < summaryTokens.length; i++) {
-                    summaryTokens[i] = summaryTokens[i].capitalize();
-                }
+        for (var i = 0; i < summaryTokens.length; i++) {
+          summaryTokens[i] = summaryTokens[i].capitalize();
+        }
 
-                return summaryTokens.join('');
-            }
+        return summaryTokens.join('');
+      }
 
-            function updateBranchName() {
-                branchName.value = prefix.value + cleanSummary(summary.value);
-            }
+      function updateBranchName() {
+        branchName.value = prefix.value + cleanSummary(summary.value);
+      }
 
-            function onPrefixChanged() {
-                localStorage.prefix = prefix.value;
-                updateBranchName();
-            }
+      function onPrefixChanged() {
+        localStorage.prefix = prefix.value;
+        updateBranchName();
+      }
 
-            function onBranchNameClicked(self) {
-                focusedBranchNameClicksCounter++;
-                if (focusedBranchNameClicksCounter === 1)
-                    self.select();
-            }
+      function onBranchNameClicked(self) {
+        focusedBranchNameClicksCounter++;
+        if (focusedBranchNameClicksCounter === 1)
+          self.select();
+      }
 
-            function resetFocusedBranchNameClicksCounter(self) {
-                focusedBranchNameClicksCounter = 0;
-            }
+      function resetFocusedBranchNameClicksCounter(self) {
+        focusedBranchNameClicksCounter = 0;
+      }
 
-            prefix.value = localStorage.prefix ? localStorage.prefix : '';
-            updateBranchName();
-        </script>
-    </body>
+      prefix.value = localStorage.prefix ? localStorage.prefix : '';
+      updateBranchName();
+    </script>
+  </body>
 </html>
