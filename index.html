@@ -11,19 +11,46 @@
       * {
         box-sizing: border-box;
       }
+      form {
+        width: 100%;
+        max-width: 100%;
+      }
       body {
         font-family: Arial, Helvetica, sans-serif;
-        background-color: #CCC;
+        background-color: #ddd;
+        padding: 0;
+        margin: 0;
+      }
+      main {
+        background-color: #fff;
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 20px;
+        box-shadow: 0 1px 8px rgba(0,0,0,0.3);
+      }
+      h1 {
+        font-size: 21px;
+        font-weight: normal;
+        text-transform: uppercase;
+        text-align: center;
+        margin-top: 0;
+        letter-spacing: 1px;
       }
       label {
-        font-weight: bold;
+        font-size: 16px;
       }
-      input[type=text] {
+      input {
+        padding: 5px 5px;
+        border-radius: 3px;
+        border: 1px solid #ccc;
+        margin: 0;
         width: 100%;
-        padding: 3px;
+      }
+      input:focus {
+        border-color: rgb(13, 129, 242);
       }
       #branchName {
-        background-color: darkgreen;
+        background-color: forestgreen;
         color: white;
         font-size: 16px;
         letter-spacing: 1px;
@@ -31,52 +58,49 @@
     </style>
   </head>
   <body>
-    <h1>Branch Namer</h1>
-    <p>
-      Converts a prefix + description to a branch name.<br>
-      <a href="https://github.com/dag0310/User-Story-to-BranchName-Converter">GitHub repo</a> | Use at your own risk! &#x1F609;
-    </p>
-    <br>
-    <p>
-      <label>Prefix:
-        <input type="text" id="prefix" oninput="onPrefixChanged()" placeholder="my/prefix/">
-      </label>
-    </p>
-    <p>
-      <label>User Story:
-        <input type="text" id="summary" oninput="updateBranchName()" placeholder="Bugfix: Some *very* strange behavior in IE6 where 100% is interpreted as 99% #IE_sucks">
-      </label>
-    </p>
-    <p>
-      <label>BranchName:
-        <input type="text" id="branchName" onclick="onBranchNameClicked(this)" onfocus="onBranchNameClicked(this)" onblur="resetFocusedBranchNameClicksCounter(this)" placeholder="my/prefix/BugfixSomeVeryStrangeBehaviorInIe6Where100IsInterpretedAs99Ie_sucks">
-      </label>
-    </p>
+    <main>
+      <h1>Branch Namer</h1>
+      <p>
+        <label>Prefix
+          <input type="text" id="prefix" oninput="onPrefixChanged()" placeholder="my/prefix/">
+        </label>
+      </p>
+      <p>
+        <label>Description
+          <input type="text" id="description" oninput="updateBranchName()" placeholder="Bugfix: Some *very* strange behavior in IE6 where 100% is interpreted as 99% #IE_sucks">
+        </label>
+      </p>
+      <p>
+        <label>Branch name
+          <input type="text" id="branchName" onclick="onBranchNameClicked(this)" onfocus="onBranchNameClicked(this)" onblur="resetFocusedBranchNameClicksCounter()" placeholder="my/prefix/BugfixSomeVeryStrangeBehaviorInIe6Where100IsInterpretedAs99Ie_sucks">
+        </label>
+      </p>
+    </main>
 
-    <!-- JavaScript -->
     <script>
-      var focusedBranchNameClicksCounter = 0;
+      let focusedBranchNameClicksCounter = 0;
 
-      String.prototype.capitalize = function() {
+      String.prototype.capitalize = function () {
         return this.charAt(0).toUpperCase() + this.slice(1);
-      }
+      };
 
-      function cleanSummary(summary) {
-        summary = summary.replace(/[^\w\s]/g, '').toLowerCase();
+      function formatDescription(description) {
+        description = description.replace(/[^\w\s]/g, '').toLowerCase();
 
-        var summaryTokens = summary.match(/\S+/g);
-        if (summaryTokens === null)
+        const descriptionTokens = description.match(/\S+/g);
+        if (descriptionTokens === null) {
           return '';
-
-        for (var i = 0; i < summaryTokens.length; i++) {
-          summaryTokens[i] = summaryTokens[i].capitalize();
         }
 
-        return summaryTokens.join('');
+        for (let i = 0; i < descriptionTokens.length; i++) {
+          descriptionTokens[i] = descriptionTokens[i].capitalize();
+        }
+
+        return descriptionTokens.join('');
       }
 
       function updateBranchName() {
-        branchName.value = prefix.value + cleanSummary(summary.value);
+        branchName.value = prefix.value + formatDescription(description.value);
       }
 
       function onPrefixChanged() {
@@ -86,15 +110,16 @@
 
       function onBranchNameClicked(self) {
         focusedBranchNameClicksCounter++;
-        if (focusedBranchNameClicksCounter === 1)
+        if (focusedBranchNameClicksCounter === 1) {
           self.select();
+        }
       }
 
-      function resetFocusedBranchNameClicksCounter(self) {
+      function resetFocusedBranchNameClicksCounter() {
         focusedBranchNameClicksCounter = 0;
       }
 
-      prefix.value = localStorage.prefix ? localStorage.prefix : '';
+      prefix.value = localStorage.prefix || '';
       updateBranchName();
     </script>
   </body>
