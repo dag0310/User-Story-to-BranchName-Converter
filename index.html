@@ -63,7 +63,7 @@
       <p>
         <label>Mode
           <select id="mode" onchange="onModeChanged()">
-            <option value="dash" selected>dash-case</option>
+            <option value="dash">dash-case</option>
             <option value="camel">CamelCase</option>
             <option value="unmodified">Unmodified</option>
           </select>
@@ -87,6 +87,7 @@
     </main>
 
     <script>
+      const defaultMode = 'dash';
       let focusedBranchNameClicksCounter = 0;
 
       String.prototype.capitalize = function () {
@@ -107,7 +108,7 @@
             return descriptionTokens.join('');
           case 'unmodified':
             return description;
-          case 'dash:':
+          case defaultMode:
           default:
             return descriptionTokens.join('-');
         }
@@ -138,7 +139,7 @@
         focusedBranchNameClicksCounter = 0;
       }
 
-      mode.value = localStorage.mode || '';
+      mode.value = localStorage.mode || defaultMode;
       prefix.value = localStorage.prefix || '';
       updateBranchName();
     </script>
