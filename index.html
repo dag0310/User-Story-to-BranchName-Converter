@@ -74,30 +74,32 @@
       </p>
       <p>
         <label>Prefix
-          <input type="text" id="prefix" oninput="onPrefixChanged()" placeholder="my/prefix/" autocomplete="off">
+          <input type="text" id="prefix" oninput="onPrefixChanged()" autocomplete="off">
         </label>
       </p>
       <p>
         <label>Description
-          <input type="text" id="description" oninput="updateBranchName()" placeholder="[HOTFIX] Fix missing semicolon" autocomplete="off">
+          <input type="text" id="description" oninput="updateBranchName()" autocomplete="off">
         </label>
       </p>
       <p>
         <label>Branch name
-          <input type="text" id="branchName" onclick="onBranchNameClicked(this)" onfocus="onBranchNameClicked(this)" onblur="resetFocusedBranchNameClicksCounter()" placeholder="my/prefix/[HOTFIX] Fix missing semicolon" autocomplete="off">
+          <input type="text" id="branchName" onclick="onBranchNameClicked(this)" onfocus="onBranchNameClicked(this)" onblur="resetFocusedBranchNameClicksCounter()" autocomplete="off">
         </label>
       </p>
     </main>
 
     <script>
       const defaultMode = 'dash';
+      const prefixPlaceholderText = 'my/prefix/';
+      const descriptionPlaceholderText = '[HOTFIX] Fix missing semicolon';
       let focusedBranchNameClicksCounter = 0;
 
       String.prototype.capitalize = function () {
         return this.charAt(0).toUpperCase() + this.slice(1);
       };
 
-      function formatDescription(description, mode) {
+      function formatAccordingToMode(description, mode) {
         const descriptionTokens = description.replace(/[^\w\s]/g, '').toLowerCase().match(/\S+/g);
         if (descriptionTokens === null) {
           return '';
@@ -118,12 +120,17 @@
       }
 
       function updateBranchName() {
-        branchName.value = prefix.value + formatDescription(description.value, mode.value);
+        branchName.value = prefix.value + formatAccordingToMode(description.value, mode.value);
       }
-      
+
+      function updateBranchNamePlaceholder() {
+        branchName.placeholder = prefixPlaceholderText + formatAccordingToMode(descriptionPlaceholderText, mode.value);
+      }
+
       function onModeChanged() {
         localStorage.mode = mode.value;
         updateBranchName();
+        updateBranchNamePlaceholder();
       }
 
       function onPrefixChanged() {
@@ -144,7 +151,12 @@
 
       mode.value = localStorage.mode || defaultMode;
       prefix.value = localStorage.prefix || '';
+      
+      prefix.placeholder = prefixPlaceholderText;
+      description.placeholder = descriptionPlaceholderText;
+
       updateBranchName();
+      updateBranchNamePlaceholder();
     </script>
   </body>
 </html>
